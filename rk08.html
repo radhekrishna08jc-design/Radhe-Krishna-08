@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bhagavad Gita Thoughts</title>
+<style>
+body {
+  font-family: 'Georgia', serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  background: linear-gradient(120deg, #ff9800, #ffb74d, #ffcc80);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+header {
+  background: rgba(139,0,0,0.8);
+  color: gold;
+  padding: 20px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-btn {
+  position: absolute;
+  right: 35px;
+  top: 20px;
+  cursor: pointer;
+  width: 25px; height: 22px;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+}
+.menu-btn div { height: 4px; background: gold; border-radius: 2px; transition: all 0.3s ease; }
+.menu-btn.open div:nth-child(1){ transform: rotate(45deg) translate(5px,5px);}
+.menu-btn.open div:nth-child(2){ opacity:0; }
+.menu-btn.open div:nth-child(3){ transform: rotate(-45deg) translate(6px,-6px); }
+
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: 60px; right: 20px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px; padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+.lang-menu button {
+  display: block;
+  margin: 5px 0;
+  padding: 6px 10px;
+  border: none;
+  background: #8b0000;
+  color: gold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.lang-menu button:hover { background: #a52a2a; }
+
+.history-btn {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  font-size: 24px;
+  cursor: pointer;
+  color: gold;
+  background: none;
+  border: none;
+  transition: 0.3s;
+}
+.history-btn:hover { transform: scale(1.2); }
+
+.date-picker {
+  display: none;
+  position: absolute;
+  left: 20px;
+  top: 60px;
+  background: rgba(255,255,255,0.95);
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.thought-card {
+  background: rgba(255,250,240,0.9);
+  margin: 50px auto 20px auto;
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  text-align: center;
+  position: relative;
+}
+
+.today-label {
+  font-weight: bold;
+  color: #8b0000;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.thought-text { font-size: 18px; margin-bottom: 15px; line-height: 1.6; }
+
+.read-aloud { border: none; background: none; font-size: 24px; cursor: pointer; transition: 0.3s; }
+.read-aloud:hover { transform: scale(1.3); }
+
+.more-btn { display: inline-block; margin-top: 15px; padding: 8px 12px; border: none; background: #8b0000; color: gold; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+.more-btn:hover { background: #a52a2a; }
+
+.details {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background: #fff0e1;
+  border-left: 4px solid #8b0000;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.thought-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+
+.like-btn, .comment-btn, .bookmark-btn, .share-btn, .meditate-btn {
+  border: 2px solid black;
+  background: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+.like-btn.liked { color: red; border-color: red; }
+.comment-btn:hover, .bookmark-btn:hover, .share-btn:hover, .meditate-btn:hover { background: #ffe4b5; }
+
+.comment-section {
+  display: none;
+  margin-top: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+.comment-section input {
+  width: 80%; padding: 8px; margin-right: 5px; border-radius: 5px; border: 1px solid #ccc;
+}
+.comment-section button {
+  padding: 8px 12px; border: none; background: #8b0000; color: gold; border-radius: 5px; cursor: pointer;
+}
+
+.comment {
+  background: #fff; padding: 8px; margin: 6px 0; border-radius: 6px;
+  display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; font-size: 15px;
+}
+.comment .like-comment { border: none; background: none; cursor: pointer; font-size: 14px; color: black; }
+.comment .like-comment.liked { color: red; }
+
+.om-symbol { font-size: 80px; color: gold; margin: 40px 0; animation: zoomAura 2s infinite alternate ease-in-out; }
+@keyframes zoomAura { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
+
+.streak {
+  position: absolute;
+  top: 20px;
+  right: 5%;
+  transform: translateX(-50%);
+  background: gold;
+  color: darkred;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.search-bar {
+  margin: 10px 0;
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.search-bar input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #8b0000;
+}
+.search-bar button {
+  padding: 8px 12px;
+  border: none;
+  background: #8b0000;
+  color: gold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.search-bar button:hover { background: #a52a2a; }
+</style>
+</head>
+<body>
+
+<header>
+  🌸 Bhagavad Gita Thoughts 🌸
+  <button class="history-btn" onclick="toggleDatePicker()">📜</button>
+  <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+    <div></div><div></div><div></div>
+  </div>
+  <div class="lang-menu" id="langMenu">
+    <button onclick="showSubLangMenu()">Languages</button>
+    <button onclick="openFeedback()">Feedback</button>
+  </div>
+</header>
+
+<div class="streak" id="streakCounter">Streak: 0</div>
+
+<div class="date-picker" id="datePicker">
+  <select id="selectedDate" onchange="changeDateThought()"></select>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search past thoughts...">
+  <button onclick="searchThoughts()">🔍</button>
+</div>
+
+<div class="thought-card">
+  <div class="today-label" id="todayLabel">Today's Thought</div>
+  <div class="thought-text" id="thought">"Loading..."</div>
+  <button class="read-aloud" onclick="readAloud()">🔊</button>
+  <button class="more-btn" onclick="toggleDetails()">More</button>
+  <div class="details" id="details">
+    <p><b>Explanation:</b> ...</p>
+    <p><b>Real Life Example:</b> ...</p>
+    <button class="read-aloud" onclick="readDetails()">🔊</button>
+  </div>
+  <div class="thought-actions">
+    <button class="like-btn" onclick="toggleLike(this)">❤️ Like</button>
+    <button class="comment-btn" onclick="toggleComments()">💬 Comment</button>
+    <button class="bookmark-btn" onclick="toggleBookmark()">🔖 Bookmark</button>
+    <button class="share-btn" onclick="shareThought()">🔗 Share</button>
+    <button class="meditate-btn" onclick="toggleMeditation()">🕉️ Meditate</button>
+  </div>
+  <div class="comment-section" id="commentSection">
+    <div>
+      <input type="text" id="commentInput" placeholder="Write a comment...">
+      <button onclick="postComment()">Send</button>
+    </div>
+    <div id="commentsList"></div>
+  </div>
+</div>
+
+<div class="om-symbol">ॐ</div>
+
+<audio id="meditationAudio" loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ---------- Data and CSV URL ----------
+let language = 'en';
+let allThoughts = {}; 
+let availableDates = [];
+const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_Z1wu_FDpUufa3SCqp DupvMulDgsju83zEKId0mvErF5kX47X5XGK08Kc2Z_-4-fUCShZe6NIL9c/pub?output=csv'; // ⚠️ IMPORTANT: Paste your CSV URL here ⚠️
+
+// ---------- Fetch and Parse CSV Data ----------
+async function fetchThoughts() {
+  try {
+    const response = await fetch(csvUrl);
+    const text = await response.text();
+    const rows = text.split('\n').slice(1); // Split by lines and remove the header row
+
+    rows.forEach(row => {
+      if (row.trim() === '') return;
+      // Splitting by comma is a simple approach. Use a library for complex CSVs.
+      const columns = row.split(','); 
+      const date = columns[0].trim();
+      
+      allThoughts[date] = {
+        en: { thought: columns[1].trim(), details: columns[2].trim(), example: columns[3].trim() },
+        hi: { thought: columns[4].trim(), details: columns[5].trim(), example: columns[6].trim() },
+        gu: { thought: columns[7].trim(), details: columns[8].trim(), example: columns[9].trim() }
+      };
+      availableDates.push(date);
+    });
+    
+    availableDates.sort(); // Sort dates chronologically
+    
+    populateDates();
+    selectDate.value = availableDates[availableDates.length - 1];
+    changeDateThought();
+
+  } catch (error) {
+    console.error('Error fetching the CSV file:', error);
+    document.getElementById('thought').innerText = "Failed to load thoughts. Please check your internet connection and the CSV URL.";
+    document.getElementById('details').innerHTML = "";
+  }
+}
+
+// ---------- Initial call to load data ----------
+fetchThoughts();
+
+// ---------- Functions ----------
+function populateDates(){
+  const selectDate = document.getElementById("selectedDate");
+  selectDate.innerHTML = ""; // Clear existing options
+  availableDates.forEach(date=>{
+    let opt = document.createElement("option");
+    opt.value = date;
+    opt.text = date === availableDates[availableDates.length-1] ? "Today" : date;
+    selectDate.appendChild(opt);
+  });
+}
+
+function readAloud(){
+  let text = document.getElementById("thought").innerText;
+  let speech = new SpeechSynthesisUtterance(text);
+  speech.lang = language==='hi'?'hi-IN':language==='gu'?'gu-IN':'en-IN';
+  window.speechSynthesis.speak(speech);
+}
+function readDetails(){
+  let date = document.getElementById("selectedDate").value;
+  let t = allThoughts[date][language];
+  let text = t.details + ". " + t.example;
+  let speech = new SpeechSynthesisUtterance(text);
+  speech.lang = language==='hi'?'hi-IN':language==='gu'?'gu-IN':'en-IN';
+  window.speechSynthesis.speak(speech);
+}
+function toggleDetails(){
+  let d = document.getElementById("details");
+  d.style.display = d.style.display==='block'?'none':'block';
+}
+function toggleLike(btn){ btn.classList.toggle("liked"); }
+function toggleComments(){ 
+  let section = document.getElementById("commentSection"); 
+  section.style.display = section.style.display==='block'?'none':'block'; 
+}
+function postComment(){
+  let input = document.getElementById("commentInput");
+  let val = input.value.trim();
+  if(val!==''){
+    let div = document.createElement("div");
+    div.className='comment';
+    div.innerHTML = `<span>${val}</span><button class="like-comment" onclick="toggleCommentLike(this)">❤️</button>`;
+    document.getElementById("commentsList").appendChild(div);
+    input.value='';
+  }
+}
+function toggleCommentLike(btn){ btn.classList.toggle("liked"); }
+
+function toggleMenu(){
+  let btn = document.getElementById("menuBtn");
+  btn.classList.toggle("open");
+  let menu = document.getElementById("langMenu");
+  menu.style.display = menu.style.display==='block'?'none':'block';
+}
+function showSubLangMenu(){
+  let langButtons = `
+    <button onclick="setLanguage('en')">English</button>
+    <button onclick="setLanguage('hi')">हिंदी</button>
+    <button onclick="setLanguage('gu')">ગુજરાતી</button>
+    <button onclick="openFeedback()">Feedback</button>
+  `;
+  document.getElementById("langMenu").innerHTML = langButtons;
+}
+function openFeedback() { window.open("https://docs.google.com/forms/d/YOUR_FORM_ID_HERE/viewform", "_blank"); }
+function setLanguage(lang){
+  language = lang;
+  changeDateThought();
+  showSubLangMenu();
+  document.getElementById("langMenu").style.display='none';
+  document.getElementById("menuBtn").classList.remove("open");
+}
+function toggleDatePicker() {
+  let dp = document.getElementById("datePicker");
+  dp.style.display = dp.style.display==='block'?'none':'block';
+}
+function changeDateThought() {
+  let selectDate = document.getElementById("selectedDate");
+  let date = selectDate.value;
+  let todayLabel = document.getElementById("todayLabel");
+  todayLabel.innerText = date === availableDates[availableDates.length-1] ? "Today's Thought" : `Thought for ${date}`;
+  if(allThoughts[date] && allThoughts[date][language]){
+    let t = allThoughts[date][language];
+    document.getElementById("thought").innerText = t.thought;
+    document.getElementById("details").innerHTML = `<p><b>Explanation:</b> ${t.details}</p><p><b>Real Life Example:</b> ${t.example}</p><button class="read-aloud" onclick="readDetails()">🔊</button>`;
+  } else {
+    document.getElementById("thought").innerText = "No thought available for this date.";
+    document.getElementById("details").innerHTML = "";
+  }
+  document.getElementById("datePicker").style.display='none';
+}
+
+// -------- Bookmark --------
+function toggleBookmark(){
+  let btn = document.querySelector(".bookmark-btn");
+  btn.classList.toggle("liked");
+  alert(btn.classList.contains("liked")?"Bookmarked!":"Removed from bookmarks!");
+}
+
+// -------- Share --------
+function shareThought(){
+  let text = document.getElementById("thought").innerText;
+  if(navigator.share){
+    navigator.share({title:"Bhagavad Gita Thought", text:text});
+  } else {
+    prompt("Copy this thought:", text);
+  }
+}
+
+// -------- Meditation Mode --------
+let isMeditating = false;
+function toggleMeditation(){
+  let audio = document.getElementById("meditationAudio");
+  isMeditating = !isMeditating;
+  if(isMeditating) audio.play(); else audio.pause();
+}
+
+// -------- Streak Tracker --------
+let streak = localStorage.getItem('streak') || 0;
+document.getElementById("streakCounter").innerText = `Streak: ${streak}`;
+
+// -------- Search Past Thoughts --------
+function searchThoughts(){
+  let query = document.getElementById("searchInput").value.toLowerCase();
+  let found = false;
+  // Search through the English thoughts for a match
+  for(let date of availableDates){
+    if(allThoughts[date]['en'].thought.toLowerCase().includes(query) || allThoughts[date]['en'].details.toLowerCase().includes(query)){
+      document.getElementById("selectedDate").value = date;
+      changeDateThought();
+      found = true;
+      break;
+    }
+  }
+  if(!found) alert("No matching thought found.");
+}
+</script>
+</body>
+</html>
